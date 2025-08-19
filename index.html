@@ -1,25 +1,65 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Runway Game</title>
-  <link rel="stylesheet" href="style.css">
-
-  <!-- PWA manifest -->
-  <link rel="manifest" href="manifest.json">
+  <style>
+    body { margin:0; overflow:hidden; background:#222; }
+    #gameCanvas { background:#333; display:block; margin:auto; }
+    .controls {
+      position: fixed;
+      bottom: 20px;
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      padding: 0 40px;
+    }
+    button {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      border: none;
+      font-size: 24px;
+      font-weight: bold;
+      background: #444;
+      color: white;
+    }
+  </style>
 </head>
 <body>
-  <h1>🏃 Runway Game</h1>
-  <canvas id="gameCanvas"></canvas>
+<canvas id="gameCanvas" width="400" height="600"></canvas>
 
-  <script src="script.js"></script>
+<div class="controls">
+  <button id="leftBtn">⟵</button>
+  <button id="rightBtn">⟶</button>
+</div>
 
-  <!-- Service worker register -->
-  <script>
-    if ("serviceWorker" in navigator) {
-      navigator.serviceWorker.register("service-worker.js");
-    }
-  </script>
+<script>
+let canvas = document.getElementById("gameCanvas");
+let ctx = canvas.getContext("2d");
+
+let player = { x: 180, y: 500, width: 40, height: 40, color: "lime" };
+
+// Draw Player
+function drawPlayer() {
+  ctx.fillStyle = player.color;
+  ctx.fillRect(player.x, player.y, player.width, player.height);
+}
+
+// Game Loop
+function gameLoop() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  drawPlayer();
+  requestAnimationFrame(gameLoop);
+}
+gameLoop();
+
+// Touch Button Controls
+document.getElementById("leftBtn").addEventListener("touchstart", () => {
+  if (player.x > 0) player.x -= 20;
+});
+document.getElementById("rightBtn").addEventListener("touchstart", () => {
+  if (player.x + player.width < canvas.width) player.x += 20;
+});
+</script>
 </body>
 </html>
